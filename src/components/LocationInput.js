@@ -38,7 +38,7 @@ export default class LocationInput extends Component {
 
   render() {
     const { currentCity, selectedCity } = this.state;
-    console.log(currentCity)
+    console.log(currentCity);
     return (
       <div className="ui stackable two column grid">
         <div className="column">
@@ -73,9 +73,17 @@ export default class LocationInput extends Component {
                             alt="current weather "
                             src={currentCity.current.condition.icon}
                           />
-                          {currentCity.current.temp_f} F
+                          {currentCity.current.temp_f} &deg;F
                         </div>
-                        <div className="label">{currentCity.current.condition.text}</div>
+                        <div className="label">
+                          {currentCity.current.condition.text}
+                        </div>
+                      </div>
+                      <div className="ui statistic">
+                        <div className="value">
+                          {currentCity.current.feelslike_f} &deg;F
+                        </div>
+                        <div className="label">Feels like</div>
                       </div>
                     </div>
                   </div>
@@ -89,6 +97,10 @@ export default class LocationInput extends Component {
             style={{ marginTop: "5px", marginRight: "10px" }}
             className="ui segment"
           >
+            <div className="ui center aligned header">
+              Current Weather and Forecast for Location
+            </div>
+
             <div className="ui fluid input">
               <input
                 onKeyPress={this.onSubmit}
@@ -115,7 +127,15 @@ export default class LocationInput extends Component {
                       />
                       {selectedCity.current.temp_f} F
                     </div>
-                    <div className="label">{selectedCity.current.condition.text}</div>
+                    <div className="label">
+                      {selectedCity.current.condition.text}
+                    </div>
+                  </div>
+                  <div className="ui statistic">
+                    <div className="value">
+                      {selectedCity.current.feelslike_f} &deg;F
+                    </div>
+                    <div className="label">Feels like</div>
                   </div>
                 </div>
               </div>
