@@ -16,7 +16,8 @@ export default class LocationInput extends Component {
     },
     inputExists: false,
     errors: {},
-    count: 1
+    count: 1,
+    selectedCount: 1
   };
 
   componentDidUpdate = async prevProps => {
@@ -59,6 +60,14 @@ export default class LocationInput extends Component {
       count
     });
   };
+
+  resetSelectedForecastDays = () => {
+
+  }
+
+  selectedforecastMoreDays = () => {
+
+  }
 
   onChange = e => {
     this.setState({
@@ -297,6 +306,23 @@ export default class LocationInput extends Component {
               >
                 Forecast for Next Three Days
               </div>
+              {this.state.count !== 1 ? (
+                <div
+                  style={{ marginBottom: "30px", marginLeft: "20px" }}
+                  onClick={this.resetSelectedForecastDays}
+                  className="ui fluid red button"
+                >
+                  Reset back to Three Day Forecast
+                </div>
+              ) : (
+                <div
+                  style={{ marginBottom: "10px", marginLeft: "20px" }}
+                  onClick={this.selectedforecastMoreDays}
+                  className="ui fluid teal button"
+                >
+                  Click here for the next three days
+                </div>
+              )}
               <div style={{ marginLeft: "20px" }} className="ui link cards">
                 {forecastSelected
                   .filter((day, i) => i !== 0)
