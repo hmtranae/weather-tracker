@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import _ from "lodash";
-import { baseUrl } from "../apis/APIXU";
+import { currentBaseUrl, forecastBaseUrl } from "../apis/APIXU";
 
 export default class LocationInput extends Component {
   state = {
@@ -13,9 +13,13 @@ export default class LocationInput extends Component {
   componentDidUpdate = async prevProps => {
     if (prevProps.location !== this.props.location) {
       const { latitude, longitude } = this.props.location;
-      const data = await axios.get(`${baseUrl}&q=${latitude},${longitude}`);
+      const currentWeather = await axios.get(`${currentBaseUrl}&q=${latitude},${longitude}`);
+      const forecastWeather = await axios.get(`${forecastBaseUrl}&q=${latitude},${longitude}&days=3`)
       this.setState({
-        currentCity: data.data
+        currentCity: {
+          currentWeather: currentWeather.data,
+          forecastWeather: forecastWeather.data
+        }
       });
     }
   };
@@ -29,17 +33,22 @@ export default class LocationInput extends Component {
   onSubmit = async e => {
     if (e.key === "Enter") {
       const { city } = this.state;
-      const data = await axios.get(`${baseUrl}&q=${city}`);
+      const currentWeather = await axios.get(`${currentBaseUrl}&q=${city}`);
+      const forecastWeather = await axios.get(`${forecastBaseUrl}&q=${city}`);
       this.setState({
-        selectedCity: data.data,
+        selectedCity: {
+          currentWeather: currentWeather.data,
+          forecastWeather: forecastWeather.data
+        },
         city: ''
       });
     }
   };
 
   render() {
-    const { currentCity, selectedCity } = this.state;
-    console.log(currentCity);
+    const { currentWeather: currentActual, forecastWeather: forecastActual } = this.state.currentCity;
+    const { currentWeather: currentSelected, forecastWeather: forecastSelected } = this.state.selectedCity;
+    // console.log(currentCity);
     return (
       <div className="ui stackable two column grid">
         <div className="column">
@@ -60,10 +69,10 @@ export default class LocationInput extends Component {
           ) : (
             <div>
               <div style={{ textAlign: "center" }}>Here's your info!</div>
-              {_.isEmpty(currentCity) === false ? (
+              {_.isEmpty(currentActual) === false ? (
                 <div>
                   <div className="ui center aligned header">
-                    {currentCity.location.name}, {currentCity.location.region}{" "}
+                    {currentActual.location.name}, {currentActual.location.region}{" "}
                   </div>
                   <div className="ui segment">
                     <div className="ui statistics">
@@ -71,24 +80,24 @@ export default class LocationInput extends Component {
                         <div className="value">
                           <img
                             className="ui circular inline image"
-                            alt="current weather "
-                            src={currentCity.current.condition.icon}
+                            alt="current weather"
+                            src={currentActual.current.condition.icon}
                           />
-                          {currentCity.current.temp_f} &deg;F
+                          {currentActual.current.temp_f} &deg;F
                         </div>
                         <div className="label">
-                          {currentCity.current.condition.text}
+                          {currentActual.current.condition.text}
                         </div>
                       </div>
                       <div className="ui statistic">
                         <div className="value">
-                          {currentCity.current.wind_mph} mph
+                          {currentActual.current.wind_mph} mph
                         </div>
                         <div className="label">Wind Speed</div>
                       </div>
                       <div className="ui statistic">
                         <div className="value">
-                          {currentCity.current.feelslike_f} &deg;F
+                          {currentActual.current.feelslike_f} &deg;F
                         </div>
                         <div className="label">Feels like</div>
                       </div>
@@ -119,10 +128,10 @@ export default class LocationInput extends Component {
               />
             </div>
           </div>
-          {_.isEmpty(selectedCity) === false ? (
+          {_.isEmpty(currentSelected) === false ? (
             <div>
               <div className="ui center aligned header">
-                {selectedCity.location.name}, {selectedCity.location.region}
+                {currentSelected.location.name}, {currentSelected.location.region}
               </div>
               <div className="ui segment">
                 <div className="ui statistics">
@@ -131,23 +140,23 @@ export default class LocationInput extends Component {
                       <img
                         className="ui circular inline image"
                         alt="current weather "
-                        src={selectedCity.current.condition.icon}
+                        src={currentSelected.current.condition.icon}
                       />
-                      {selectedCity.current.temp_f} F
+                      {currentSelected.current.temp_f} F
                     </div>
                     <div className="label">
-                      {selectedCity.current.condition.text}
+                      {currentSelected.current.condition.text}
                     </div>
                   </div>
                   <div className="ui statistic">
                     <div className="value">
-                      {selectedCity.current.wind_mph} mph
+                      {currentSelected.current.wind_mph} mph
                     </div>
                     <div className="label">Wind Speed</div>
                   </div>
                   <div className="ui statistic">
                     <div className="value">
-                      {selectedCity.current.feelslike_f} &deg;F
+                      {currentSelected.current.feelslike_f} &deg;F
                     </div>
                     <div className="label">Feels like</div>
                   </div>
