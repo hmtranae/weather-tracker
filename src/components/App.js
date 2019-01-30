@@ -1,33 +1,34 @@
-import React, { Component } from 'react'
-import LocationInput from './LocationInput'
-import ReactAnimatedWeather from 'react-animated-weather'
+import React, { Component } from "react";
+import LocationInput from "./LocationInput";
 
 export default class App extends Component {
-  state = {
-    userLocation: {
-      latitude: null,
-      longitude: null
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      userLocation: {
+        latitude: "",
+        longitude: ""
+      }
+    };
   }
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords
-      const userLocation = {
-        latitude: latitude,
-        longitude: longitude
-      }
+      const { latitude, longitude } = position.coords;
       this.setState({
-        userLocation
-      })
-    })
+        userLocation: {
+          latitude,
+          longitude
+        }
+      });
+    });
   }
 
   render() {
     return (
       <div>
-          <LocationInput location={this.state.userLocation} />
+        <LocationInput location={this.state.userLocation} />
       </div>
-    )
+    );
   }
 }

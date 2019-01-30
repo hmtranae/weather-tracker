@@ -1,66 +1,67 @@
-import React, { Component } from 'react'
-import axios from 'axios'
-import _ from 'lodash'
-import { API_KEY, baseUrl } from '../apis/OpenWeatherMap'
+import React, { Component } from "react";
+import axios from "axios";
+import { baseUrl } from "../apis/APIXU";
 
 export default class LocationInput extends Component {
   state = {
-    city: '',
+    city: "",
     currentCity: {}
-  }
+  };
 
-  componentDidUpdate = async () => {
-    if (_.isEmpty(this.props) === false) {
-      const { latitude, longitude } = this.props.location
-      let data = await axios.get(
-        `${baseUrl}?lat=${latitude}&lon=${longitude}&units=imperial&APPID=${API_KEY}`
-      )
+  componentDidUpdate = async prevProps => {
+    if (prevProps.location !== this.props.location) {
+      const { latitude, longitude } = this.props.location;
+      const data = await axios.get(
+        `${baseUrl}&q=${latitude},${longitude}`
+      );
       this.setState({
         currentCity: data.data
-      })
+      });
     }
-  }
+  };
 
   onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
-    })
-  }
+    });
+  };
 
   onSubmit = async e => {
-    if (e.key === 'Enter') {
-      const { city } = this.state
-      let data = await axios.get(`${baseUrl}?q=${city}&APPID=${API_KEY}`)
-      console.log(data)
+    if (e.key === "Enter") {
+      const { city } = this.state;
+      let data = await axios.get(`${baseUrl}?q=${city}`);
+      console.log(data);
     }
-  }
+  };
 
   render() {
+    console.log(this.state.currentCity)
     return (
       <div className="ui stackable two column grid">
         <div className="column">
           <div
-            style={{ marginTop: '10px', marginLeft: '10px' }}
+            style={{ marginTop: "10px", marginLeft: "10px" }}
             className="ui segment"
           >
             <div className="ui center aligned header">
               Current Weather and Forecast for Your Location
             </div>
           </div>
-          {_.isEmpty(this.props) ? (
-            <span style={{ paddingLeft: '20px', color: 'red' }}>
+          {this.props.location.latitude === "" ? (
+            <span style={{ paddingLeft: "20px", color: "red" }}>
               Please enable your location in order to see the current conditions
               and forecast for your area!
+              {this.props.location.latitude}
             </span>
           ) : (
             <div>
-              <div style={{ textAlign: 'center' }}>Here's your info!</div>
+              <div style={{ textAlign: "center" }}>Here's your info!</div>
             </div>
           )}
         </div>
         <div className="column">
           <div
-            style={{ marginTop: '5px', marginRight: '10px' }}
+            style={{ marginTop: "5px", marginRight: "10px" }}
             className="ui segment"
           >
             <div className="ui fluid input">
@@ -75,6 +76,6 @@ export default class LocationInput extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
