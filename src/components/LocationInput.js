@@ -14,7 +14,8 @@ export default class LocationInput extends Component {
       currentWeather: {},
       forecastWeather: []
     },
-    inputExists: false
+    inputExists: false,
+    errors: {}
   };
 
   componentDidUpdate = async prevProps => {
@@ -44,19 +45,30 @@ export default class LocationInput extends Component {
   onSubmit = async e => {
     if (e.key === "Enter") {
       const { city } = this.state;
-      const currentWeather = await axios.get(`${currentBaseUrl}&q=${city}`);
-      const forecastWeather = await axios.get(
-        `${forecastBaseUrl}&q=${city}&days=4`
-      );
-      console.log(currentWeather);
       this.setState({
-        selectedCity: {
-          currentWeather: currentWeather.data,
-          forecastWeather: forecastWeather.data.forecast.forecastday
-        },
-        city: "",
-        inputExists: true
-      });
+        errors: {}
+      })
+      try {
+        const currentWeather = await axios.get(`${currentBaseUrl}&q=${city}`);
+        const forecastWeather = await axios.get(
+          `${forecastBaseUrl}&q=${city}&days=4`
+        );
+        this.setState({
+          selectedCity: {
+            currentWeather: currentWeather.data,
+            forecastWeather: forecastWeather.data.forecast.forecastday
+          },
+          city: "",
+          inputExists: true
+        });
+      } catch (e) {
+        this.setState({
+          errors: {
+            incorrectCity: "Please check your spelling"
+          },
+          city: ""
+        });
+      }
     }
   };
 
@@ -69,6 +81,7 @@ export default class LocationInput extends Component {
       currentWeather: currentSelected,
       forecastWeather: forecastSelected
     } = this.state.selectedCity;
+    const { errors } = this.state;
     return (
       <div className="ui stackable two column grid">
         <div className="column">
@@ -166,17 +179,36 @@ export default class LocationInput extends Component {
               Current Weather and Forecast for Location
             </div>
 
-            <div className="ui fluid input">
-              <input
-                onKeyPress={this.onSubmit}
-                onChange={this.onChange}
-                name="city"
-                type="text"
-                placeholder="Enter city name..."
-                value={this.state.city}
-                autoComplete="off"
-              />
-            </div>
+            {errors.incorrectCity ? (
+              <div>
+                <div className="ui fluid error input">
+                  <input
+                    onKeyPress={this.onSubmit}
+                    onChange={this.onChange}
+                    name="city"
+                    type="text"
+                    placeholder="Enter city name..."
+                    value={this.state.city}
+                    autoComplete="off"
+                  />
+                </div>
+                <div className="ui error message">
+                  <p>{errors.incorrectCity}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="ui fluid input">
+                <input
+                  onKeyPress={this.onSubmit}
+                  onChange={this.onChange}
+                  name="city"
+                  type="text"
+                  placeholder="Enter city name..."
+                  value={this.state.city}
+                  autoComplete="off"
+                />
+              </div>
+            )}
           </div>
           {_.isEmpty(currentSelected) === false ? (
             <div>
@@ -226,9 +258,9 @@ export default class LocationInput extends Component {
               <div style={{ marginLeft: "20px" }} className="ui link cards">
                 {forecastSelected
                   .filter((day, i) => i !== 0)
-                  .map(day => {
+                  .map((day, i) => {
                     return (
-                      <div className="card">
+                      <div key={i} className="card">
                         <div className="image">
                           <img
                             src={day.day.condition.icon}
