@@ -20,13 +20,20 @@ export default class LocationInput extends Component {
   };
 
   componentDidUpdate = async prevProps => {
-    if (prevProps.location !== this.props.location) {
+    if (
+      prevProps.location !== this.props.location ||
+      prevProps.count !== this.state.count ||
+      this.state.count === 1
+    ) {
+      let days = this.state.count * 3 + 1;
       const { latitude, longitude } = this.props.location;
       const currentWeather = await axios.get(
         `${currentBaseUrl}&q=${latitude},${longitude}`
       );
       const forecastWeather = await axios.get(
-        `${forecastBaseUrl}&q=${latitude},${longitude}&days=4`
+        `${forecastBaseUrl}&q=${latitude},${longitude}&days=${this.state.count *
+          3 +
+          1}`
       );
       this.setState({
         currentCity: {
@@ -46,8 +53,12 @@ export default class LocationInput extends Component {
   };
 
   resetForecastDays = () => {
-    
-  }
+    let count = this.state.count;
+    count--;
+    this.setState({
+      count
+    });
+  };
 
   onChange = e => {
     this.setState({
@@ -156,13 +167,6 @@ export default class LocationInput extends Component {
               <div className="ui teal huge center aligned header">
                 Forecast for Next Three Days
               </div>
-              <div
-                style={{ marginBottom: "10px", marginLeft: "20px" }}
-                onClick={this.forecastMoreDays}
-                className="ui fluid teal button"
-              >
-                Click here for the next three days
-              </div>
               {this.state.count !== 1 ? (
                 <div
                   style={{ marginBottom: "30px", marginLeft: "20px" }}
@@ -171,7 +175,15 @@ export default class LocationInput extends Component {
                 >
                   Reset back to Three Day Forecast
                 </div>
-              ) : null}
+              ) : (
+                <div
+                  style={{ marginBottom: "10px", marginLeft: "20px" }}
+                  onClick={this.forecastMoreDays}
+                  className="ui fluid teal button"
+                >
+                  Click here for the next three days
+                </div>
+              )}
               <div style={{ marginLeft: "20px" }} className="ui link cards">
                 {forecastActual
                   .filter((day, i) => i !== 0)

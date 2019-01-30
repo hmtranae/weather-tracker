@@ -8,7 +8,8 @@ export default class App extends Component {
       userLocation: {
         latitude: "",
         longitude: ""
-      }
+      },
+      count: 1
     };
   }
 
@@ -27,7 +28,7 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <LocationInput location={this.state.userLocation} />
+        <LocationInput location={this.state.userLocation} count={this.state.count}/>
       </div>
     );
   }
