@@ -31,7 +31,8 @@ export default class LocationInput extends Component {
       const { city } = this.state;
       const data = await axios.get(`${baseUrl}&q=${city}`);
       this.setState({
-        selectedCity: data.data
+        selectedCity: data.data,
+        city: ''
       });
     }
   };
@@ -81,6 +82,12 @@ export default class LocationInput extends Component {
                       </div>
                       <div className="ui statistic">
                         <div className="value">
+                          {currentCity.current.wind_mph} mph
+                        </div>
+                        <div className="label">Wind Speed</div>
+                      </div>
+                      <div className="ui statistic">
+                        <div className="value">
                           {currentCity.current.feelslike_f} &deg;F
                         </div>
                         <div className="label">Feels like</div>
@@ -108,6 +115,7 @@ export default class LocationInput extends Component {
                 name="city"
                 type="text"
                 placeholder="Enter city name..."
+                value={this.state.city}
               />
             </div>
           </div>
@@ -130,6 +138,12 @@ export default class LocationInput extends Component {
                     <div className="label">
                       {selectedCity.current.condition.text}
                     </div>
+                  </div>
+                  <div className="ui statistic">
+                    <div className="value">
+                      {selectedCity.current.wind_mph} mph
+                    </div>
+                    <div className="label">Wind Speed</div>
                   </div>
                   <div className="ui statistic">
                     <div className="value">
