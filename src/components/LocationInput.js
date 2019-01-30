@@ -14,7 +14,7 @@ export default class LocationInput extends Component {
     if (prevProps.location !== this.props.location) {
       const { latitude, longitude } = this.props.location;
       const currentWeather = await axios.get(`${currentBaseUrl}&q=${latitude},${longitude}`);
-      const forecastWeather = await axios.get(`${forecastBaseUrl}&q=${latitude},${longitude}&days=3`)
+      const forecastWeather = await axios.get(`${forecastBaseUrl}&q=${latitude},${longitude}&days=4`)
       this.setState({
         currentCity: {
           currentWeather: currentWeather.data,
@@ -34,7 +34,7 @@ export default class LocationInput extends Component {
     if (e.key === "Enter") {
       const { city } = this.state;
       const currentWeather = await axios.get(`${currentBaseUrl}&q=${city}`);
-      const forecastWeather = await axios.get(`${forecastBaseUrl}&q=${city}`);
+      const forecastWeather = await axios.get(`${forecastBaseUrl}&q=${city}&days=4`);
       this.setState({
         selectedCity: {
           currentWeather: currentWeather.data,
@@ -48,7 +48,7 @@ export default class LocationInput extends Component {
   render() {
     const { currentWeather: currentActual, forecastWeather: forecastActual } = this.state.currentCity;
     const { currentWeather: currentSelected, forecastWeather: forecastSelected } = this.state.selectedCity;
-    // console.log(currentCity);
+    console.log(forecastActual);
     return (
       <div className="ui stackable two column grid">
         <div className="column">
