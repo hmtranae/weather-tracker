@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import axios from "axios";
-import _ from 'lodash';
+import _ from "lodash";
 import { baseUrl } from "../apis/APIXU";
 
 export default class LocationInput extends Component {
   state = {
     city: "",
-    currentCity: {}
+    currentCity: {},
+    selectedCity: {}
   };
 
   componentDidUpdate = async prevProps => {
@@ -28,15 +29,17 @@ export default class LocationInput extends Component {
   onSubmit = async e => {
     if (e.key === "Enter") {
       const { city } = this.state;
-      let data = await axios.get(`${baseUrl}?q=${city}`);
-      console.log(data);
+      const data = await axios.get(`${baseUrl}&q=${city}`);
+      this.setState({
+        selectedCity: data.data
+      });
     }
   };
 
   render() {
-    const { currentCity } = this.state;
-    const date = `${new Date().getHours()}:${new Date().getMinutes()}`
-    console.log(currentCity)
+    const { currentCity, selectedCity } = this.state;
+    const date = `${new Date().getHours()}:${new Date().getMinutes()}`;
+    console.log(currentCity);
     return (
       <div className="ui stackable two column grid">
         <div className="column">
@@ -58,8 +61,26 @@ export default class LocationInput extends Component {
             <div>
               <div style={{ textAlign: "center" }}>Here's your info!</div>
               {_.isEmpty(currentCity) === false ? (
-                <div className="ui center aligned header">
-                  {currentCity.location.name}, {currentCity.location.region} at {date}
+                <div>
+                  <div className="ui center aligned header">
+                    {currentCity.location.name}, {currentCity.location.region}{" "}
+                    at {date}
+                  </div>
+                  <div className="ui right floated segment">
+                    <div className="ui statistics">
+                      <div className="statistic">
+                        <div className="value">
+                          <img
+                            className="ui circular inline image"
+                            alt="current weather "
+                            src={currentCity.current.condition.icon}
+                          />
+                          {currentCity.current.temp_f} F
+                        </div>
+                        <div className="label">Current Temperature</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : null}
             </div>
@@ -80,6 +101,29 @@ export default class LocationInput extends Component {
               />
             </div>
           </div>
+          {_.isEmpty(selectedCity) === false ? (
+            <div>
+              <div className="ui center aligned header">
+                {selectedCity.location.name}, {selectedCity.location.region} at{" "}
+                {date}
+              </div>
+              <div className="ui right floated segment">
+                <div className="ui statistics">
+                  <div className="statistic">
+                    <div className="value">
+                      <img
+                        className="ui circular inline image"
+                        alt="current weather "
+                        src={selectedCity.current.condition.icon}
+                      />
+                      {selectedCity.current.temp_f} F
+                    </div>
+                    <div className="label">Current Temperature</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     );
