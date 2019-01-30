@@ -38,8 +38,7 @@ export default class LocationInput extends Component {
 
   render() {
     const { currentCity, selectedCity } = this.state;
-    const date = `${new Date().getHours()}:${new Date().getMinutes()}`;
-    console.log(currentCity);
+    console.log(currentCity)
     return (
       <div className="ui stackable two column grid">
         <div className="column">
@@ -64,9 +63,8 @@ export default class LocationInput extends Component {
                 <div>
                   <div className="ui center aligned header">
                     {currentCity.location.name}, {currentCity.location.region}{" "}
-                    at {date}
                   </div>
-                  <div className="ui right floated segment">
+                  <div className="ui segment">
                     <div className="ui statistics">
                       <div className="statistic">
                         <div className="value">
@@ -77,7 +75,7 @@ export default class LocationInput extends Component {
                           />
                           {currentCity.current.temp_f} F
                         </div>
-                        <div className="label">Current Temperature</div>
+                        <div className="label">{currentCity.current.condition.text}</div>
                       </div>
                     </div>
                   </div>
@@ -104,10 +102,9 @@ export default class LocationInput extends Component {
           {_.isEmpty(selectedCity) === false ? (
             <div>
               <div className="ui center aligned header">
-                {selectedCity.location.name}, {selectedCity.location.region} at{" "}
-                {date}
+                {selectedCity.location.name}, {selectedCity.location.region}
               </div>
-              <div className="ui right floated segment">
+              <div className="ui segment">
                 <div className="ui statistics">
                   <div className="statistic">
                     <div className="value">
@@ -118,7 +115,7 @@ export default class LocationInput extends Component {
                       />
                       {selectedCity.current.temp_f} F
                     </div>
-                    <div className="label">Current Temperature</div>
+                    <div className="label">{selectedCity.current.condition.text}</div>
                   </div>
                 </div>
               </div>
