@@ -26,10 +26,8 @@ export default class LocationInput extends Component {
 
   onSubmit = async e => {
     if (e.key === 'Enter') {
-      const { city } = this.state;
-      let data = await axios.get(
-        `${baseUrl}?q=${city}&APPID=${API_KEY}`
-      )
+      const { city } = this.state
+      let data = await axios.get(`${baseUrl}?q=${city}&APPID=${API_KEY}`)
       console.log(data)
     }
   }
@@ -52,7 +50,10 @@ export default class LocationInput extends Component {
               and forecast for your area!
             </span>
           ) : (
-            <div style={{ textAlign: 'center' }}>Here's your info!</div>
+            <div>
+              <div style={{ textAlign: 'center' }}>Here's your info!</div>
+              <div className="ui relaxed divided list" />
+            </div>
           )}
         </div>
         <div className="column">
