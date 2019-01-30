@@ -25,11 +25,7 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        {this.state.userLocation.latitude ? (
           <LocationInput location={this.state.userLocation} />
-        ) : (
-          <LocationInput />
-        )}
       </div>
     )
   }
