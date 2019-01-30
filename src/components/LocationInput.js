@@ -1,9 +1,16 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import _ from 'lodash';
+import { API_KEY, baseUrl } from '../apis/OpenWeatherMap';
 
 export default class LocationInput extends Component {
-  componentDidMount() {}
+  componentDidUpdate = async () => {
+      if (_.isEmpty(this.props) === false) {
+        const { latitude, longitude } = this.props.location
+        let data = await axios.get(`${baseUrl}?lat=${latitude}&lon=${longitude}&APPID=${API_KEY}`)
+        console.log(data);
+      }
+  }
 
   render() {
     return (
