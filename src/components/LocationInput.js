@@ -10,7 +10,10 @@ export default class LocationInput extends Component {
       currentWeather: {},
       forecastWeather: []
     },
-    selectedCity: {}
+    selectedCity: {
+      currentWeather: {},
+      forecastWeather: []
+    }
   };
 
   componentDidUpdate = async prevProps => {
@@ -48,7 +51,7 @@ export default class LocationInput extends Component {
       this.setState({
         selectedCity: {
           currentWeather: currentWeather.data,
-          forecastWeather: forecastWeather.data.forecast
+          forecastWeather: forecastWeather.data.forecast.forecastday
         },
         city: ""
       });
@@ -64,7 +67,7 @@ export default class LocationInput extends Component {
       currentWeather: currentSelected,
       forecastWeather: forecastSelected
     } = this.state.selectedCity;
-    console.log(this.state.currentCity.forecastWeather);
+    // console.log(this.state.currentCity.forecastWeather);
     return (
       <div className="ui stackable two column grid">
         <div className="column">
@@ -91,7 +94,7 @@ export default class LocationInput extends Component {
                     {currentActual.location.name},{" "}
                     {currentActual.location.region}{" "}
                   </div>
-                  <div className="ui segment">
+                  <div style={{marginLeft: '20px'}} className="ui segment">
                     <div className="ui statistics">
                       <div className="statistic">
                         <div className="value">
@@ -125,7 +128,7 @@ export default class LocationInput extends Component {
               <div className="ui teal huge center aligned header">
                 Forecast for Next Three Days
               </div>
-              <div className="ui link cards">
+              <div style={{marginLeft: '20px'}} className="ui link cards">
                 {forecastActual
                   .filter((day, i) => i !== 0)
                   .map(day => {
@@ -179,7 +182,7 @@ export default class LocationInput extends Component {
                 {currentSelected.location.name},{" "}
                 {currentSelected.location.region}
               </div>
-              <div className="ui segment">
+              <div style={{marginRight: '20px'}} className="ui segment">
                 <div className="ui statistics">
                   <div className="statistic">
                     <div className="value">
@@ -188,7 +191,7 @@ export default class LocationInput extends Component {
                         alt="current weather "
                         src={currentSelected.current.condition.icon}
                       />
-                      {currentSelected.current.temp_f} F
+                      {currentSelected.current.temp_f} &deg;F
                     </div>
                     <div className="label">
                       {currentSelected.current.condition.text}
@@ -210,6 +213,33 @@ export default class LocationInput extends Component {
               </div>
             </div>
           ) : null}
+          <div className="ui teal huge center aligned header">
+                Forecast for Next Three Days
+              </div>
+              <div style={{marginLeft: '20px'}} className="ui link cards">
+                {forecastSelected.filter((day, i) => i !== 0)
+                  .map(day => {
+                    console.log(day)
+                    return (
+                      <div className="card">
+                        <div className="image">
+                          <img src={day.day.condition.icon}/>
+                        </div>
+                        <div className='content'>
+                          <div className='header'>{day.day.condition.text}</div>
+                        </div>
+                        <div className='extra content'>
+                          <span className='right floated'>
+                            Average Temp: {day.day.avgtemp_f} &deg;F
+                          </span>
+                          <span>
+                            Wind: {day.day.avgvis_miles} mph
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
         </div>
       </div>
     );
