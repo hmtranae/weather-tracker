@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import _ from 'lodash';
 import { baseUrl } from "../apis/APIXU";
 
 export default class LocationInput extends Component {
@@ -11,9 +12,7 @@ export default class LocationInput extends Component {
   componentDidUpdate = async prevProps => {
     if (prevProps.location !== this.props.location) {
       const { latitude, longitude } = this.props.location;
-      const data = await axios.get(
-        `${baseUrl}&q=${latitude},${longitude}`
-      );
+      const data = await axios.get(`${baseUrl}&q=${latitude},${longitude}`);
       this.setState({
         currentCity: data.data
       });
@@ -35,7 +34,9 @@ export default class LocationInput extends Component {
   };
 
   render() {
-    console.log(this.state.currentCity)
+    const { currentCity } = this.state;
+    const date = `${new Date().getHours()}:${new Date().getMinutes()}`
+    console.log(currentCity)
     return (
       <div className="ui stackable two column grid">
         <div className="column">
@@ -56,6 +57,11 @@ export default class LocationInput extends Component {
           ) : (
             <div>
               <div style={{ textAlign: "center" }}>Here's your info!</div>
+              {_.isEmpty(currentCity) === false ? (
+                <div className="ui center aligned header">
+                  {currentCity.location.name}, {currentCity.location.region} at {date}
+                </div>
+              ) : null}
             </div>
           )}
         </div>
