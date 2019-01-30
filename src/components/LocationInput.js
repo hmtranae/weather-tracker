@@ -9,7 +9,7 @@ export default class LocationInput extends Component {
     return (
       <div className="ui stackable two column grid">
         <div className="column">
-          <div className="ui segment">
+          <div style={{marginTop: '10px', marginLeft: '10px'}} className="ui segment">
             <div className="ui center aligned header">
               Current Weather and Forecast for Your Location
             </div>
@@ -21,7 +21,11 @@ export default class LocationInput extends Component {
           )}
         </div>
         <div className="column">
-          <div className="ui segment">dasd</div>
+          <div style={{marginTop: '5px', marginRight: '10px'}} className="ui segment">
+            <div className='ui fluid input'>
+                <input type='text' placeholder='Enter city name...'/>
+            </div>
+          </div>
         </div>
       </div>
     )
