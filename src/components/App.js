@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import LocationInput from './LocationInput'
 
 export default class App extends Component {
@@ -28,7 +27,7 @@ export default class App extends Component {
       <div>
         App
         {this.state.userLocation.latitude ? (
-          <LocationInput location={this.state.location} />
+          <LocationInput location={this.state.userLocation} />
         ) : (
           <LocationInput />
         )}
