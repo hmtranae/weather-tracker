@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import axios from "axios";
-import _ from "lodash";
-import { currentBaseUrl, forecastBaseUrl } from "../apis/APIXU";
+import React, { Component } from 'react'
+import axios from 'axios'
+import _ from 'lodash'
+import { currentBaseUrl, forecastBaseUrl } from '../apis/APIXU'
 
 export default class LocationInput extends Component {
   state = {
-    city: "",
+    city: '',
     currentCity: {
       currentWeather: {},
       forecastWeather: []
@@ -18,131 +18,158 @@ export default class LocationInput extends Component {
     errors: {},
     count: 1,
     selectedCount: 1
-  };
+  }
 
   componentDidUpdate = async prevProps => {
-    if (
-      prevProps.location !== this.props.location ||
-      prevProps.count !== this.state.count ||
-      this.state.count === 1
-    ) {
-      let days = this.state.count * 3 + 1;
-      const { latitude, longitude } = this.props.location;
+    if (prevProps.location !== this.props.location) {
+      let days = this.state.count * 3 + 1
+      const { latitude, longitude } = this.props.location
       const currentWeather = await axios.get(
         `${currentBaseUrl}&q=${latitude},${longitude}`
-      );
+      )
       const forecastWeather = await axios.get(
-        `${forecastBaseUrl}&q=${latitude},${longitude}&days=${this.state.count *
-          3 +
-          1}`
-      );
+        `${forecastBaseUrl}&q=${latitude},${longitude}&days=${days}`
+      )
       this.setState({
         currentCity: {
           currentWeather: currentWeather.data,
           forecastWeather: forecastWeather.data.forecast.forecastday
         }
-      });
+      })
     }
-  };
-
-  forecastMoreDays = () => {
-    let count = this.state.count;
-    count++;
-    this.setState({
-      count
-    });
-  };
-
-  resetForecastDays = () => {
-    let count = this.state.count;
-    count--;
-    this.setState({
-      count
-    });
-  };
-
-  resetSelectedForecastDays = () => {
-
   }
 
-  selectedforecastMoreDays = () => {
+  forecastMoreDays = async () => {
+    let count = this.state.count
+    count++
+    this.setState({
+      count
+    })
+    const { latitude, longitude } = this.props.location
+    const currentWeather = await axios.get(
+      `${currentBaseUrl}&q=${latitude},${longitude}`
+    )
+    const forecastWeather = await axios.get(
+      `${forecastBaseUrl}&q=${latitude},${longitude}&days=7`
+    )
+    this.setState({
+      currentCity: {
+        currentWeather: currentWeather.data,
+        forecastWeather: forecastWeather.data.forecast.forecastday
+      }
+    })
+  }
 
+  resetForecastDays = async () => {
+    let count = this.state.count
+    count--
+    this.setState({
+      count
+    })
+    const { latitude, longitude } = this.props.location
+    const currentWeather = await axios.get(
+      `${currentBaseUrl}&q=${latitude},${longitude}`
+    )
+    const forecastWeather = await axios.get(
+      `${forecastBaseUrl}&q=${latitude},${longitude}&days=4`
+    )
+    this.setState({
+      currentCity: {
+        currentWeather: currentWeather.data,
+        forecastWeather: forecastWeather.data.forecast.forecastday
+      }
+    })
+  }
+
+  selectedForecastMoreDays = () => {
+    let selectedCount = this.state.selectedCount
+    selectedCount++
+    this.setState({
+      selectedCount
+    })
+  }
+
+  resetSelectedForecastDays = () => {
+    let selectedCount = this.state.selectedCount
+    selectedCount--
+    this.setState({
+      selectedCount
+    })
   }
 
   onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
-    });
-  };
+    })
+  }
 
   onSubmit = async e => {
-    if (e.key === "Enter") {
-      const { city } = this.state;
+    if (e.key === 'Enter') {
+      const { city } = this.state
       this.setState({
         errors: {}
-      });
+      })
       try {
-        const currentWeather = await axios.get(`${currentBaseUrl}&q=${city}`);
+        const currentWeather = await axios.get(`${currentBaseUrl}&q=${city}`)
         const forecastWeather = await axios.get(
           `${forecastBaseUrl}&q=${city}&days=4`
-        );
+        )
         this.setState({
           selectedCity: {
             currentWeather: currentWeather.data,
             forecastWeather: forecastWeather.data.forecast.forecastday
           },
-          city: "",
+          city: '',
           inputExists: true
-        });
+        })
       } catch (e) {
         this.setState({
           errors: {
-            incorrectCity: "Please check your spelling"
+            incorrectCity: 'Please check your spelling'
           },
-          city: ""
-        });
+          city: ''
+        })
       }
     }
-  };
+  }
 
   render() {
-    console.log(this.state.count);
     const {
       currentWeather: currentActual,
       forecastWeather: forecastActual
-    } = this.state.currentCity;
+    } = this.state.currentCity
     const {
       currentWeather: currentSelected,
       forecastWeather: forecastSelected
-    } = this.state.selectedCity;
-    const { errors } = this.state;
+    } = this.state.selectedCity
+    const { errors } = this.state
     return (
       <div className="ui stackable two column grid">
         <div className="column">
           <div
-            style={{ marginTop: "10px", marginLeft: "10px" }}
+            style={{ marginTop: '10px', marginLeft: '10px' }}
             className="ui segment"
           >
             <div className="ui teal huge center aligned header">
               Current Weather and Forecast for Your Location
             </div>
           </div>
-          {this.props.location.latitude === "" ? (
-            <span style={{ paddingLeft: "20px", color: "red" }}>
+          {this.props.location.latitude === '' ? (
+            <span style={{ paddingLeft: '20px', color: 'red' }}>
               Please enable your location in order to see the current conditions
               and forecast for your area!
               {this.props.location.latitude}
             </span>
           ) : (
             <div>
-              <div style={{ textAlign: "center" }}>Here's your info!</div>
+              <div style={{ textAlign: 'center' }}>Here's your info!</div>
               {_.isEmpty(currentActual) === false ? (
                 <div>
                   <div className="ui center aligned header">
-                    {currentActual.location.name},{" "}
-                    {currentActual.location.region}{" "}
+                    {currentActual.location.name},{' '}
+                    {currentActual.location.region}{' '}
                   </div>
-                  <div style={{ marginLeft: "20px" }} className="ui segment">
+                  <div style={{ marginLeft: '20px' }} className="ui segment">
                     <div className="ui statistics">
                       <div className="statistic">
                         <div className="value">
@@ -178,7 +205,7 @@ export default class LocationInput extends Component {
               </div>
               {this.state.count !== 1 ? (
                 <div
-                  style={{ marginBottom: "30px", marginLeft: "20px" }}
+                  style={{ marginBottom: '30px', marginLeft: '20px' }}
                   onClick={this.resetForecastDays}
                   className="ui fluid red button"
                 >
@@ -186,14 +213,14 @@ export default class LocationInput extends Component {
                 </div>
               ) : (
                 <div
-                  style={{ marginBottom: "10px", marginLeft: "20px" }}
+                  style={{ marginBottom: '10px', marginLeft: '20px' }}
                   onClick={this.forecastMoreDays}
                   className="ui fluid teal button"
                 >
                   Click here for the next three days
                 </div>
               )}
-              <div style={{ marginLeft: "20px" }} className="ui link cards">
+              <div style={{ marginLeft: '20px' }} className="ui link cards">
                 {forecastActual
                   .filter((day, i) => i !== 0)
                   .map((day, i) => {
@@ -215,7 +242,7 @@ export default class LocationInput extends Component {
                           <span>Wind: {day.day.avgvis_miles} mph</span>
                         </div>
                       </div>
-                    );
+                    )
                   })}
               </div>
             </div>
@@ -223,7 +250,7 @@ export default class LocationInput extends Component {
         </div>
         <div className="column">
           <div
-            style={{ marginTop: "5px", marginRight: "10px" }}
+            style={{ marginTop: '5px', marginRight: '10px' }}
             className="ui segment"
           >
             <div className="ui red huge center aligned header">
@@ -264,10 +291,10 @@ export default class LocationInput extends Component {
           {_.isEmpty(currentSelected) === false ? (
             <div>
               <div className="ui center aligned header">
-                {currentSelected.location.name},{" "}
+                {currentSelected.location.name},{' '}
                 {currentSelected.location.region}
               </div>
-              <div style={{ marginRight: "20px" }} className="ui segment">
+              <div style={{ marginRight: '20px' }} className="ui segment">
                 <div className="ui statistics">
                   <div className="statistic">
                     <div className="value">
@@ -301,14 +328,14 @@ export default class LocationInput extends Component {
           {this.state.inputExists ? (
             <div>
               <div
-                style={{ paddingTop: "20px" }}
+                style={{ paddingTop: '20px' }}
                 className="ui teal huge center aligned header"
               >
                 Forecast for Next Three Days
               </div>
-              {this.state.count !== 1 ? (
+              {this.state.selectedCount !== 1 ? (
                 <div
-                  style={{ marginBottom: "30px", marginLeft: "20px" }}
+                  style={{ marginBottom: '30px', marginLeft: '20px' }}
                   onClick={this.resetSelectedForecastDays}
                   className="ui fluid red button"
                 >
@@ -316,14 +343,14 @@ export default class LocationInput extends Component {
                 </div>
               ) : (
                 <div
-                  style={{ marginBottom: "10px", marginLeft: "20px" }}
-                  onClick={this.selectedforecastMoreDays}
+                  style={{ marginBottom: '10px', marginLeft: '20px' }}
+                  onClick={this.selectedForecastMoreDays}
                   className="ui fluid teal button"
                 >
                   Click here for the next three days
                 </div>
               )}
-              <div style={{ marginLeft: "20px" }} className="ui link cards">
+              <div style={{ marginLeft: '20px' }} className="ui link cards">
                 {forecastSelected
                   .filter((day, i) => i !== 0)
                   .map((day, i) => {
@@ -345,13 +372,13 @@ export default class LocationInput extends Component {
                           <span>Wind: {day.day.avgvis_miles} mph</span>
                         </div>
                       </div>
-                    );
+                    )
                   })}
               </div>
             </div>
           ) : (
             <div
-              style={{ padding: "250px 0 250px 0", marginRight: "20px" }}
+              style={{ padding: '250px 0 250px 0', marginRight: '20px' }}
               className="ui segment"
             >
               <div className="ui active dimmer">
@@ -365,6 +392,6 @@ export default class LocationInput extends Component {
           )}
         </div>
       </div>
-    );
+    )
   }
 }
