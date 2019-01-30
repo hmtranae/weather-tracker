@@ -13,7 +13,8 @@ export default class LocationInput extends Component {
     selectedCity: {
       currentWeather: {},
       forecastWeather: []
-    }
+    },
+    inputExists: false
   };
 
   componentDidUpdate = async prevProps => {
@@ -25,7 +26,6 @@ export default class LocationInput extends Component {
       const forecastWeather = await axios.get(
         `${forecastBaseUrl}&q=${latitude},${longitude}&days=4`
       );
-      console.log(currentWeather.data);
       this.setState({
         currentCity: {
           currentWeather: currentWeather.data,
@@ -53,7 +53,8 @@ export default class LocationInput extends Component {
           currentWeather: currentWeather.data,
           forecastWeather: forecastWeather.data.forecast.forecastday
         },
-        city: ""
+        city: "",
+        inputExists: true
       });
     }
   };
@@ -67,7 +68,6 @@ export default class LocationInput extends Component {
       currentWeather: currentSelected,
       forecastWeather: forecastSelected
     } = this.state.selectedCity;
-    // console.log(this.state.currentCity.forecastWeather);
     return (
       <div className="ui stackable two column grid">
         <div className="column">
@@ -94,7 +94,7 @@ export default class LocationInput extends Component {
                     {currentActual.location.name},{" "}
                     {currentActual.location.region}{" "}
                   </div>
-                  <div style={{marginLeft: '20px'}} className="ui segment">
+                  <div style={{ marginLeft: "20px" }} className="ui segment">
                     <div className="ui statistics">
                       <div className="statistic">
                         <div className="value">
@@ -128,26 +128,24 @@ export default class LocationInput extends Component {
               <div className="ui teal huge center aligned header">
                 Forecast for Next Three Days
               </div>
-              <div style={{marginLeft: '20px'}} className="ui link cards">
+              <div style={{ marginLeft: "20px" }} className="ui link cards">
                 {forecastActual
                   .filter((day, i) => i !== 0)
                   .map(day => {
-                    console.log(day)
+                    console.log(day);
                     return (
                       <div className="card">
                         <div className="image">
-                          <img src={day.day.condition.icon}/>
+                          <img src={day.day.condition.icon} />
                         </div>
-                        <div className='content'>
-                          <div className='header'>{day.day.condition.text}</div>
+                        <div className="content">
+                          <div className="header">{day.day.condition.text}</div>
                         </div>
-                        <div className='extra content'>
-                          <span className='right floated'>
+                        <div className="extra content">
+                          <span className="right floated">
                             Average Temp: {day.day.avgtemp_f} &deg;F
                           </span>
-                          <span>
-                            Wind: {day.day.avgvis_miles} mph
-                          </span>
+                          <span>Wind: {day.day.avgvis_miles} mph</span>
                         </div>
                       </div>
                     );
@@ -173,6 +171,7 @@ export default class LocationInput extends Component {
                 type="text"
                 placeholder="Enter city name..."
                 value={this.state.city}
+                autoComplete='off'
               />
             </div>
           </div>
@@ -182,7 +181,7 @@ export default class LocationInput extends Component {
                 {currentSelected.location.name},{" "}
                 {currentSelected.location.region}
               </div>
-              <div style={{marginRight: '20px'}} className="ui segment">
+              <div style={{ marginRight: "20px" }} className="ui segment">
                 <div className="ui statistics">
                   <div className="statistic">
                     <div className="value">
@@ -213,33 +212,43 @@ export default class LocationInput extends Component {
               </div>
             </div>
           ) : null}
-          <div className="ui teal huge center aligned header">
+          {this.state.inputExists ? (
+            <div>
+              <div style={{paddingTop: '20px'}} className="ui teal huge center aligned header">
                 Forecast for Next Three Days
               </div>
-              <div style={{marginLeft: '20px'}} className="ui link cards">
-                {forecastSelected.filter((day, i) => i !== 0)
+              <div style={{ marginLeft: "20px" }} className="ui link cards">
+                {forecastSelected
+                  .filter((day, i) => i !== 0)
                   .map(day => {
-                    console.log(day)
+                    console.log(day);
                     return (
                       <div className="card">
                         <div className="image">
-                          <img src={day.day.condition.icon}/>
+                          <img src={day.day.condition.icon} />
                         </div>
-                        <div className='content'>
-                          <div className='header'>{day.day.condition.text}</div>
+                        <div className="content">
+                          <div className="header">{day.day.condition.text}</div>
                         </div>
-                        <div className='extra content'>
-                          <span className='right floated'>
+                        <div className="extra content">
+                          <span className="right floated">
                             Average Temp: {day.day.avgtemp_f} &deg;F
                           </span>
-                          <span>
-                            Wind: {day.day.avgvis_miles} mph
-                          </span>
+                          <span>Wind: {day.day.avgvis_miles} mph</span>
                         </div>
                       </div>
                     );
                   })}
               </div>
+            </div>
+          ) : (
+            <div style={{ padding: '250px 0 250px 0', marginRight: '20px'}} className="ui segment">
+              <div className="ui active dimmer">
+                <div className="ui massive text loader">To see current weather and forecast, please enter in a city name!</div>
+              </div>
+              <p />
+            </div>
+          )}
         </div>
       </div>
     );
