@@ -15,7 +15,8 @@ export default class LocationInput extends Component {
       forecastWeather: []
     },
     inputExists: false,
-    errors: {}
+    errors: {},
+    count: 1
   };
 
   componentDidUpdate = async prevProps => {
@@ -35,6 +36,18 @@ export default class LocationInput extends Component {
       });
     }
   };
+
+  forecastMoreDays = () => {
+    let count = this.state.count;
+    count++;
+    this.setState({
+      count
+    });
+  };
+
+  resetForecastDays = () => {
+    
+  }
 
   onChange = e => {
     this.setState({
@@ -73,6 +86,7 @@ export default class LocationInput extends Component {
   };
 
   render() {
+    console.log(this.state.count);
     const {
       currentWeather: currentActual,
       forecastWeather: forecastActual
@@ -143,12 +157,21 @@ export default class LocationInput extends Component {
                 Forecast for Next Three Days
               </div>
               <div
-                style={{ marginBottom: "30px", marginLeft: "20px" }}
+                style={{ marginBottom: "10px", marginLeft: "20px" }}
                 onClick={this.forecastMoreDays}
                 className="ui fluid teal button"
               >
                 Click here for the next three days
               </div>
+              {this.state.count !== 1 ? (
+                <div
+                  style={{ marginBottom: "30px", marginLeft: "20px" }}
+                  onClick={this.resetForecastDays}
+                  className="ui fluid red button"
+                >
+                  Reset back to Three Day Forecast
+                </div>
+              ) : null}
               <div style={{ marginLeft: "20px" }} className="ui link cards">
                 {forecastActual
                   .filter((day, i) => i !== 0)
