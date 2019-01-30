@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import LocationInput from './LocationInput'
+import ReactAnimatedWeather from 'react-animated-weather'
 
 export default class App extends Component {
   state = {

@@ -5,16 +5,19 @@ import { API_KEY, baseUrl } from '../apis/OpenWeatherMap'
 
 export default class LocationInput extends Component {
   state = {
-    city: ''
+    city: '',
+    currentCity: {}
   }
 
   componentDidUpdate = async () => {
     if (_.isEmpty(this.props) === false) {
       const { latitude, longitude } = this.props.location
       let data = await axios.get(
-        `${baseUrl}?lat=${latitude}&lon=${longitude}&APPID=${API_KEY}`
+        `${baseUrl}?lat=${latitude}&lon=${longitude}&units=imperial&APPID=${API_KEY}`
       )
-      console.log(data)
+      this.setState({
+        currentCity: data.data
+      })
     }
   }
 
@@ -52,7 +55,6 @@ export default class LocationInput extends Component {
           ) : (
             <div>
               <div style={{ textAlign: 'center' }}>Here's your info!</div>
-              <div className="ui relaxed divided list" />
             </div>
           )}
         </div>
