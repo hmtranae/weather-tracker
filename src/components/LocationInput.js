@@ -47,7 +47,7 @@ export default class LocationInput extends Component {
       const { city } = this.state;
       this.setState({
         errors: {}
-      })
+      });
       try {
         const currentWeather = await axios.get(`${currentBaseUrl}&q=${city}`);
         const forecastWeather = await axios.get(
@@ -141,6 +141,13 @@ export default class LocationInput extends Component {
               ) : null}
               <div className="ui teal huge center aligned header">
                 Forecast for Next Three Days
+              </div>
+              <div
+                style={{ marginBottom: "30px", marginLeft: "20px" }}
+                onClick={this.forecastMoreDays}
+                className="ui fluid teal button"
+              >
+                Click here for the next three days
               </div>
               <div style={{ marginLeft: "20px" }} className="ui link cards">
                 {forecastActual
