@@ -81,19 +81,35 @@ export default class LocationInput extends Component {
     })
   }
 
-  selectedForecastMoreDays = () => {
+  selectedForecastMoreDays = async () => {
     let selectedCount = this.state.selectedCount
     selectedCount++
     this.setState({
       selectedCount
     })
+    const forecastWeather = await axios.get(`${forecastBaseUrl}&q=${this.state.city}&days=7`)
+    this.setState({
+      selectedCity: {
+        currentWeather: this.state.selectedCity.currentWeather,
+        forecastWeather: forecastWeather.data.forecast.forecastday
+      },
+      inputExists: true
+    })
   }
 
-  resetSelectedForecastDays = () => {
+  resetSelectedForecastDays = async () => {
     let selectedCount = this.state.selectedCount
     selectedCount--
     this.setState({
       selectedCount
+    })
+    const forecastWeather = await axios.get(`${forecastBaseUrl}&q=${this.state.city}&days=4`)
+    this.setState({
+      selectedCity: {
+        currentWeather: this.state.selectedCity.currentWeather,
+        forecastWeather: forecastWeather.data.forecast.forecastday
+      },
+      inputExists: true
     })
   }
 
@@ -119,7 +135,6 @@ export default class LocationInput extends Component {
             currentWeather: currentWeather.data,
             forecastWeather: forecastWeather.data.forecast.forecastday
           },
-          city: '',
           inputExists: true
         })
       } catch (e) {
