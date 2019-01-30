@@ -48,6 +48,7 @@ export default class LocationInput extends Component {
       const forecastWeather = await axios.get(
         `${forecastBaseUrl}&q=${city}&days=4`
       );
+      console.log(currentWeather);
       this.setState({
         selectedCity: {
           currentWeather: currentWeather.data,
@@ -131,12 +132,14 @@ export default class LocationInput extends Component {
               <div style={{ marginLeft: "20px" }} className="ui link cards">
                 {forecastActual
                   .filter((day, i) => i !== 0)
-                  .map(day => {
-                    console.log(day);
+                  .map((day, i) => {
                     return (
-                      <div className="card">
+                      <div key={i} className="card">
                         <div className="image">
-                          <img src={day.day.condition.icon} />
+                          <img
+                            src={day.day.condition.icon}
+                            alt="weather icon"
+                          />
                         </div>
                         <div className="content">
                           <div className="header">{day.day.condition.text}</div>
@@ -171,7 +174,7 @@ export default class LocationInput extends Component {
                 type="text"
                 placeholder="Enter city name..."
                 value={this.state.city}
-                autoComplete='off'
+                autoComplete="off"
               />
             </div>
           </div>
@@ -214,18 +217,23 @@ export default class LocationInput extends Component {
           ) : null}
           {this.state.inputExists ? (
             <div>
-              <div style={{paddingTop: '20px'}} className="ui teal huge center aligned header">
+              <div
+                style={{ paddingTop: "20px" }}
+                className="ui teal huge center aligned header"
+              >
                 Forecast for Next Three Days
               </div>
               <div style={{ marginLeft: "20px" }} className="ui link cards">
                 {forecastSelected
                   .filter((day, i) => i !== 0)
                   .map(day => {
-                    console.log(day);
                     return (
                       <div className="card">
                         <div className="image">
-                          <img src={day.day.condition.icon} />
+                          <img
+                            src={day.day.condition.icon}
+                            alt="weather icon"
+                          />
                         </div>
                         <div className="content">
                           <div className="header">{day.day.condition.text}</div>
@@ -242,9 +250,15 @@ export default class LocationInput extends Component {
               </div>
             </div>
           ) : (
-            <div style={{ padding: '250px 0 250px 0', marginRight: '20px'}} className="ui segment">
+            <div
+              style={{ padding: "250px 0 250px 0", marginRight: "20px" }}
+              className="ui segment"
+            >
               <div className="ui active dimmer">
-                <div className="ui massive text loader">To see current weather and forecast, please enter in a city name!</div>
+                <div className="ui massive text loader">
+                  To see current weather and forecast, please enter in a city
+                  name!
+                </div>
               </div>
               <p />
             </div>
