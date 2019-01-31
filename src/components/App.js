@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import LocationInput from "./LocationInput";
+import WeatherHistory from "./WeatherHistory";
 
 export default class App extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ export default class App extends Component {
     return (
       <div>
         <LocationInput location={this.state.userLocation} count={this.state.count}/>
+        <WeatherHistory />
       </div>
     );
   }
