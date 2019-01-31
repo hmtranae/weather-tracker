@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Chart from "react-apexcharts";
-import { token } from "../apis/NOAA";
+import { token, baseUrl, datasetid } from "../apis/NOAA";
 import { Dropdown } from "semantic-ui-react";
 import { stateOptions } from "../utils/StateOptions";
 import { yearOptions } from "../utils/YearOptions";
@@ -14,21 +14,27 @@ export default class WeatherHistory extends Component {
   state = {
     yearValue: "",
     stateValue: "",
-    stateId: ''
+    stateId: "",
+    showStateDropdown: false
   };
 
-  componentDidMount = async () => {
-    const data = await axios.get(
-      "https://www.ncdc.noaa.gov/cdo-web/api/v2/datasets",
-      config
-    );
-    // console.log(data);
-  };
+  componentDidMount = async () => {};
 
   onYearChange = (e, { value }) => {
     this.setState({
-      yearValue: value
+      yearValue: value,
+      showStateDropdown: true
     });
+  };
+
+  getMonth = () => {
+    let month = "";
+    if (new Date().getMonth() < 9) {
+      month = `0${new Date().getMonth() + 1}`;
+    } else {
+      month = `${new Date().getMonth() + 1}`;
+    }
+    return month;
   };
 
   onStateChange = async (e, { value }) => {
@@ -36,7 +42,17 @@ export default class WeatherHistory extends Component {
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/locations?locationcategoryid=ST&limit=52",
       config
     );
-    const stateId = stateData.data.results.filter(state => state.name === value)
+    const stateId = stateData.data.results.filter(
+      state => state.name === value
+    );
+
+    const month = this.getMonth();
+    const beginDate = `${new Date().getFullYear() - this.state.yearValue}-12-${new Date().getDate()}`;
+    const endDate = `${new Date().getFullYear()}-${month}-${new Date().getDate()}`;
+    const weatherData = await axios.get(`${baseUrl}${datasetid}&locationid=${stateId[0].id}&startdate=${beginDate}&enddate=${endDate}&units=standard&limit=100`,
+      config
+    );
+    console.log(weatherData)
     this.setState({
       stateValue: value,
       stateId: stateId[0].id
@@ -44,7 +60,6 @@ export default class WeatherHistory extends Component {
   };
 
   render() {
-    console.log(this.state.stateId)
     return (
       <div>
         <div className="ui divider" />
@@ -70,15 +85,17 @@ export default class WeatherHistory extends Component {
                 onChange={this.onYearChange}
                 value={this.state.yearValue}
               />
-              <Dropdown
-                placeholder="Choose state..."
-                search
-                fluid
-                selection
-                options={stateOptions}
-                onChange={this.onStateChange}
-                value={this.state.stateValue}
-              />
+              {this.state.showStateDropdown ? (
+                <Dropdown
+                  placeholder="Choose state..."
+                  search
+                  fluid
+                  selection
+                  options={stateOptions}
+                  onChange={this.onStateChange}
+                  value={this.state.stateValue}
+                />
+              ) : null}
             </div>
           </div>
         </div>
