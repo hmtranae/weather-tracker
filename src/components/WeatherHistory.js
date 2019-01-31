@@ -8,8 +8,8 @@ import { yearOptions } from '../utils/YearOptions'
 
 export default class WeatherHistory extends Component {
   state = {
-    state: '',
-    year: ''
+    yearValue: '',
+    stateValue: ''
   }
 
   componentDidMount = async () => {
@@ -28,6 +28,18 @@ export default class WeatherHistory extends Component {
     console.log(data)
   }
 
+  onYearChange = (e, { value }) => {
+    this.setState({
+      yearValue: value
+    })
+  }
+
+  onStateChange = (e, { value }) => {
+    this.setState({
+      stateValue: value
+    })
+  }
+
   render() {
     return (
       <div>
@@ -42,19 +54,21 @@ export default class WeatherHistory extends Component {
               <Dropdown
                 style={{marginBottom: '20px'}}
                 placeholder='Data dating back...'
-                autoComplete='nope'
                 search
                 fluid
                 selection
                 options={yearOptions}
+                onChange={this.onYearChange}
+                value={this.state.yearValue}
               />
               <Dropdown
                 placeholder="Choose state..."
-                autoComplete='nope'
                 search
                 fluid
                 selection
                 options={stateOptions}
+                onChange={this.onStateChange}
+                value={this.state.stateValue}
               />
             </div>
           </div>
