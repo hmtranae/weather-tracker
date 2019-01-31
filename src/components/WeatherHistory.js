@@ -41,6 +41,8 @@ export default class WeatherHistory extends Component {
   }
 
   render() {
+    console.log(this.state.yearValue)
+    console.log(this.state.stateValue)
     return (
       <div>
         <div className="ui divider" />
