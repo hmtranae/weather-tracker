@@ -42,6 +42,7 @@ export default class WeatherHistory extends Component {
               <Dropdown
                 style={{marginBottom: '20px'}}
                 placeholder='Data dating back...'
+                autoComplete='nope'
                 search
                 fluid
                 selection
@@ -49,6 +50,7 @@ export default class WeatherHistory extends Component {
               />
               <Dropdown
                 placeholder="Choose state..."
+                autoComplete='nope'
                 search
                 fluid
                 selection
